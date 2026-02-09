@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ramadan Mubarak</title>
+    <title>Ramadan Mubarak 1447</title>
     <link href="https://fonts.googleapis.com/css2?family=Berkshire+Swash&display=swap" rel="stylesheet">
     <style>
         :root {
             --gold: #d4af37;
+            --light-gold: #ffed4e;
             --cream: #f5e6d3;
             --glass: rgba(255, 255, 255, 0.1);
         }
@@ -22,7 +23,7 @@
             align-items: center;
             justify-content: center;
             color: var(--cream);
-            overflow: hidden; /* Prevent scroll during fireworks */
+            overflow: hidden; 
         }
 
         /* Stars Background */
@@ -42,20 +43,59 @@
             animation: twinkle 4s infinite alternate;
         }
 
-        /* LANTERNS: PC Only */
+        /* LANTERNS with Glow Effects (PC Only) */
         .lanterns-container { display: none; }
         @media (min-width: 1024px) {
             .lanterns-container {
                 display: flex;
                 position: absolute;
-                top: -20px; 
+                top: -30px; 
                 width: 100%;
                 justify-content: space-around;
                 padding: 0 10%;
                 z-index: 10;
             }
-            .lantern { width: 110px; animation: hanging 4s ease-in-out infinite; }
-            .lantern img { width: 100%; filter: drop-shadow(0 0 15px var(--gold)); }
+            .lantern { 
+                width: 110px; 
+                position: relative;
+                animation: hanging 4s ease-in-out infinite; 
+            }
+            .lantern img { 
+                width: 100%; 
+                position: relative;
+                z-index: 2;
+                filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.5));
+            }
+            
+            /* Inner Candle Glow */
+            .lantern::after {
+                content: '';
+                position: absolute;
+                top: 55%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 40px;
+                height: 50px;
+                background: radial-gradient(circle, var(--light-gold) 0%, var(--gold) 50%, transparent 100%);
+                border-radius: 50%;
+                filter: blur(8px);
+                z-index: 1;
+                animation: candlePulse 2s infinite alternate;
+            }
+
+            /* Outer Radiance */
+            .lantern::before {
+                content: '';
+                position: absolute;
+                top: 55%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 80px;
+                height: 100px;
+                background: radial-gradient(circle, rgba(212, 175, 55, 0.3) 0%, transparent 70%);
+                z-index: 0;
+                animation: candlePulse 4s infinite alternate-reverse;
+            }
         }
 
         /* Main Container */
@@ -98,21 +138,12 @@
 
         .moon { width: 100%; max-width: clamp(350px, 55vw, 900px); filter: drop-shadow(0 0 50px rgba(212, 175, 55, 0.25)); }
 
-        /* Fireworks Particle Style */
-        .firework {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: var(--gold);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 99;
-        }
+        /* Fireworks */
+        .firework { position: absolute; width: 4px; height: 4px; border-radius: 50%; pointer-events: none; z-index: 99; }
 
         /* Mobile Adjustments */
         @media (max-width: 1023px) {
             .container { grid-template-columns: 1fr; grid-template-areas: "image" "text"; text-align: center; margin-top: 40px; }
-            .illustration { margin-bottom: 2rem; }
             .content { padding-top: 0; display: flex; flex-direction: column; align-items: center; }
             .countdown-container { margin: 2rem auto; width: 100%; }
             .moon { max-width: 80%; }
@@ -121,9 +152,12 @@
         /* Animations */
         @keyframes twinkle { from { opacity: 0.3; } to { opacity: 0.8; } }
         @keyframes hanging { 0%, 100% { transform: translateY(0) rotate(-1.5deg); } 50% { transform: translateY(20px) rotate(1.5deg); } }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes moonPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
-        
+        @keyframes candlePulse { 
+            0% { opacity: 0.6; transform: translate(-50%, -50%) scale(0.9); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+        }
         @keyframes explode {
             0% { transform: translate(0, 0); opacity: 1; }
             100% { transform: translate(var(--x), var(--y)); opacity: 0; }
@@ -159,7 +193,7 @@
             </div>
 
             <p style="opacity: 0.9; max-width: 550px; line-height: 1.6; font-size: 1.2rem;">
-                "Ramadan is the month of forgiveness. Let's take this opportunity to repent and become better."
+                "Ramadan is the month of forgiveness. Let's take this opportunity to repent and become better versions of ourselves."
             </p>
         </section>
     </main>
@@ -172,15 +206,16 @@
             const centerY = Math.random() * window.innerHeight;
             const color = Math.random() > 0.5 ? '#d4af37' : '#f5e6d3';
             
-            for (let i = 0; i < 30; i++) {
+            for (let i = 0; i < 35; i++) {
                 const particle = document.createElement('div');
                 particle.classList.add('firework');
                 particle.style.background = color;
+                particle.style.boxShadow = `0 0 6px ${color}`;
                 particle.style.left = centerX + 'px';
                 particle.style.top = centerY + 'px';
                 
                 const angle = Math.random() * Math.PI * 2;
-                const velocity = Math.random() * 150 + 50;
+                const velocity = Math.random() * 180 + 40;
                 const x = Math.cos(angle) * velocity + 'px';
                 const y = Math.sin(angle) * velocity + 'px';
                 
@@ -194,13 +229,11 @@
         }
 
         function updateCountdown() {
-            // TARGET DATE: Feb 18, 2026
             const ramadanDate = new Date("February 18, 2026 00:00:00").getTime();
             const now = new Date().getTime();
             const gap = ramadanDate - now;
 
             if (gap <= 0) {
-                // Keep timer at 00
                 document.getElementById('days').innerText = "00";
                 document.getElementById('hours').innerText = "00";
                 document.getElementById('minutes').innerText = "00";
@@ -209,7 +242,7 @@
                 
                 if (!fireworksActive) {
                     fireworksActive = true;
-                    setInterval(createFirework, 2000); // Explode every 2 seconds
+                    setInterval(createFirework, 2000);
                     createFirework(); 
                 }
                 return;
@@ -226,5 +259,4 @@
         updateCountdown();
     </script>
 </body>
-
 </html>
