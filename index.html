@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ramadan Mubarak</title>
+    <title>Ramadan Mubarak 1447</title>
     <link href="https://fonts.googleapis.com/css2?family=Berkshire+Swash&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -12,11 +12,7 @@
             --glass: rgba(255, 255, 255, 0.1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, sans-serif;
@@ -26,7 +22,7 @@
             align-items: center;
             justify-content: center;
             color: var(--cream);
-            overflow-x: hidden;
+            overflow: hidden; /* Prevent scroll during fireworks */
         }
 
         /* Stars Background */
@@ -46,35 +42,28 @@
             animation: twinkle 4s infinite alternate;
         }
 
-        /* LANTERNS: Hidden on mobile/tablet/TV by default */
-        .lanterns-container {
-            display: none;
-        }
-
-        /* LANTERNS: Only visible on PC/Desktop (1024px+) */
+        /* LANTERNS: PC Only */
+        .lanterns-container { display: none; }
         @media (min-width: 1024px) {
             .lanterns-container {
                 display: flex;
                 position: absolute;
-                top: -20px;
+                top: -20px; 
                 width: 100%;
                 justify-content: space-around;
-                padding: 0 5%;
+                padding: 0 10%;
                 z-index: 10;
             }
-            .lantern {
-                width: 100px;
-                animation: hanging 4s ease-in-out infinite;
-            }
-            .lantern img { width: 100%; filter: drop-shadow(0 0 10px var(--gold)); }
+            .lantern { width: 110px; animation: hanging 4s ease-in-out infinite; }
+            .lantern img { width: 100%; filter: drop-shadow(0 0 15px var(--gold)); }
         }
 
-        /* Responsive Layout */
+        /* Main Container */
         .container {
-            width: 90%;
-            max-width: 1400px;
+            width: 95%;
+            max-width: 1600px;
             display: grid;
-            grid-template-columns: 1fr 1.2fr;
+            grid-template-columns: 1fr 1.3fr;
             grid-template-areas: "text image";
             align-items: center;
             gap: 2rem;
@@ -82,99 +71,70 @@
             padding: 2rem;
         }
 
-        .content { 
-            grid-area: text; 
-            animation: fadeInUp 1.2s ease-out;
-        }
+        .content { grid-area: text; animation: fadeInUp 1.2s ease-out; padding-top: 40px; text-align: left; }
+        .illustration { grid-area: image; display: flex; justify-content: center; align-items: center; animation: moonPulse 6s ease-in-out infinite; }
 
-        .illustration { 
-            grid-area: image; 
-            display: flex;
-            justify-content: center;
-            animation: moonPulse 6s ease-in-out infinite;
-        }
+        h1 { font-family: 'Berkshire Swash', cursive; font-size: clamp(2.5rem, 6vw, 6rem); line-height: 1.1; margin-bottom: 0.5rem; }
+        .hijri { font-size: clamp(1.2rem, 2.5vw, 2.5rem); color: var(--gold); margin-bottom: 1.5rem; font-weight: bold; }
 
-        h1 {
-            font-family: 'Berkshire Swash', cursive;
-            font-size: clamp(2.5rem, 6vw, 5.5rem);
-            line-height: 1.1;
-            margin-bottom: 0.5rem;
-        }
-
-        .hijri {
-            font-size: clamp(1.2rem, 2.5vw, 2.2rem);
-            color: var(--gold);
-            margin-bottom: 1.5rem;
-            font-weight: bold;
-        }
-
-        /* Countdown */
+        /* Countdown Boxes */
         .countdown-container {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            max-width: 550px;
+            gap: 15px;
+            max-width: 600px;
             margin: 2rem 0;
         }
         .time-box {
             background: var(--glass);
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.1);
-            padding: 15px 5px;
-            border-radius: 12px;
+            padding: 20px 5px;
+            border-radius: 15px;
             text-align: center;
         }
-        .time-box span {
-            display: block;
-            font-size: clamp(1.2rem, 2.2vw, 2.2rem);
-            font-weight: bold;
-            color: var(--gold);
-        }
-        .time-box label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; }
+        .time-box span { display: block; font-size: clamp(1.3rem, 2.5vw, 2.8rem); font-weight: bold; color: var(--gold); }
+        .time-box label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* The Bigger Moon */
-        .moon { 
-            width: 100%; 
-            max-width: clamp(320px, 50vw, 750px); /* Increased size */
-            height: auto;
-            filter: drop-shadow(0 0 40px rgba(212, 175, 55, 0.2));
+        .moon { width: 100%; max-width: clamp(350px, 55vw, 900px); filter: drop-shadow(0 0 50px rgba(212, 175, 55, 0.25)); }
+
+        /* Fireworks Particle Style */
+        .firework {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--gold);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99;
         }
 
-        /* Responsive Logic */
-        @media (max-width: 900px) {
-            .container {
-                grid-template-columns: 1fr;
-                grid-template-areas: "image" "text"; /* Moon on top */
-                text-align: center;
-                margin-top: 40px;
-            }
-            .countdown-container { margin: 2rem auto; }
-            .moon { max-width: 85%; } /* Make it prominent on mobile */
+        /* Mobile Adjustments */
+        @media (max-width: 1023px) {
+            .container { grid-template-columns: 1fr; grid-template-areas: "image" "text"; text-align: center; margin-top: 40px; }
+            .illustration { margin-bottom: 2rem; }
+            .content { padding-top: 0; display: flex; flex-direction: column; align-items: center; }
+            .countdown-container { margin: 2rem auto; width: 100%; }
+            .moon { max-width: 80%; }
         }
 
         /* Animations */
         @keyframes twinkle { from { opacity: 0.3; } to { opacity: 0.8; } }
-        @keyframes hanging { 0%, 100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(15px) rotate(1deg); } }
+        @keyframes hanging { 0%, 100% { transform: translateY(0) rotate(-1.5deg); } 50% { transform: translateY(20px) rotate(1.5deg); } }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes moonPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
         
-        @keyframes moonPulse {
-            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 40px rgba(212, 175, 55, 0.2)); }
-            50% { transform: scale(1.03); filter: drop-shadow(0 0 60px rgba(212, 175, 55, 0.4)); }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            * { animation: none !important; transition: none !important; }
+        @keyframes explode {
+            0% { transform: translate(0, 0); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-    <div class="stars-background" aria-hidden="true">
-        <div class="stars-layer"></div>
-    </div>
+    <div class="stars-background"><div class="stars-layer"></div></div>
 
-    <header class="lanterns-container" aria-hidden="true">
+    <header class="lanterns-container">
         <div class="lantern"><img src="lantern.png" alt=""></div>
         <div class="lantern"><img src="lantern.png" alt=""></div>
         <div class="lantern"><img src="lantern.png" alt=""></div>
@@ -184,45 +144,84 @@
 
     <main class="container">
         <figure class="illustration">
-            <img src="moon-mosque.png" alt="Crescent moon with a mosque silhouette" class="moon">
+            <img src="moon-mosque.png" alt="Moon" class="moon">
         </figure>
 
         <section class="content">
-            <h1>Ramadan<br>Mubarak</h1>
+            <h1 id="status-text">Ramadan<br>Mubarak</h1>
             <p class="hijri">1447 AH</p>
             
-            <div class="countdown-container" id="timer">
+            <div class="countdown-container">
                 <div class="time-box"><span id="days">00</span><label>Days</label></div>
                 <div class="time-box"><span id="hours">00</span><label>Hours</label></div>
                 <div class="time-box"><span id="minutes">00</span><label>Mins</label></div>
                 <div class="time-box"><span id="seconds">00</span><label>Secs</label></div>
             </div>
 
-            <p style="opacity: 0.9; max-width: 500px; margin: 0 auto; line-height: 1.6; font-size: 1.1rem;">
-                "Ramadan is the month of forgiveness. Let's take this opportunity to repent and become better versions of ourselves."
+            <p style="opacity: 0.9; max-width: 550px; line-height: 1.6; font-size: 1.2rem;">
+                "Ramadan is the month of forgiveness. Let's take this opportunity to repent and become better."
             </p>
         </section>
     </main>
 
     <script>
+        let fireworksActive = false;
+
+        function createFirework() {
+            const centerX = Math.random() * window.innerWidth;
+            const centerY = Math.random() * window.innerHeight;
+            const color = Math.random() > 0.5 ? '#d4af37' : '#f5e6d3';
+            
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('firework');
+                particle.style.background = color;
+                particle.style.left = centerX + 'px';
+                particle.style.top = centerY + 'px';
+                
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = Math.random() * 150 + 50;
+                const x = Math.cos(angle) * velocity + 'px';
+                const y = Math.sin(angle) * velocity + 'px';
+                
+                particle.style.setProperty('--x', x);
+                particle.style.setProperty('--y', y);
+                particle.style.animation = 'explode 1.5s ease-out forwards';
+                
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 1500);
+            }
+        }
+
         function updateCountdown() {
-            // Target Date: Feb 18, 2026
+            // TARGET DATE: Feb 18, 2026
             const ramadanDate = new Date("February 18, 2026 00:00:00").getTime();
             const now = new Date().getTime();
             const gap = ramadanDate - now;
 
             if (gap <= 0) {
-                document.getElementById('timer').innerHTML = "<h2 style='color:var(--gold); grid-column: span 4;'>Ramadan Kareem!</h2>";
+                // Keep timer at 00
+                document.getElementById('days').innerText = "00";
+                document.getElementById('hours').innerText = "00";
+                document.getElementById('minutes').innerText = "00";
+                document.getElementById('seconds').innerText = "00";
+                document.getElementById('status-text').innerText = "Ramadan Kareem!";
+                
+                if (!fireworksActive) {
+                    fireworksActive = true;
+                    setInterval(createFirework, 2000); // Explode every 2 seconds
+                    createFirework(); 
+                }
                 return;
             }
 
             const second = 1000, minute = second * 60, hour = minute * 60, day = hour * 24;
-
-            document.getElementById('days').innerText = Math.floor(gap / day);
-            document.getElementById('hours').innerText = Math.floor((gap % day) / hour);
-            document.getElementById('minutes').innerText = Math.floor((gap % hour) / minute);
-            document.getElementById('seconds').innerText = Math.floor((gap % minute) / second);
+            document.getElementById('days').innerText = Math.floor(gap / day).toString().padStart(2, '0');
+            document.getElementById('hours').innerText = Math.floor((gap % day) / hour).toString().padStart(2, '0');
+            document.getElementById('minutes').innerText = Math.floor((gap % hour) / minute).toString().padStart(2, '0');
+            document.getElementById('seconds').innerText = Math.floor((gap % minute) / second).toString().padStart(2, '0');
         }
+
         setInterval(updateCountdown, 1000);
         updateCountdown();
     </script>
