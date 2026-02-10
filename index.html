@@ -229,7 +229,7 @@
         }
 
         function updateCountdown() {
-            const ramadanDate = new Date("February 18, 2026 00:00:00").getTime();
+            const ramadanDate = new Date("February 18, 2026 23:59:59").getTime();
             const now = new Date().getTime();
             const gap = ramadanDate - now;
 
@@ -259,4 +259,5 @@
         updateCountdown();
     </script>
 </body>
+
 </html>
