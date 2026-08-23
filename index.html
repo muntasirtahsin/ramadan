@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ramadan Mubarak 1447</title>
+    <title>Ramadan Mubarak 1448</title>
     <link href="https://fonts.googleapis.com/css2?family=Berkshire+Swash&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -183,7 +183,7 @@
 
         <section class="content">
             <h1 id="status-text">Ramadan<br>Mubarak</h1>
-            <p class="hijri">1447 AH</p>
+            <p class="hijri">1448 AH</p>
             
             <div class="countdown-container">
                 <div class="time-box"><span id="days">00</span><label>Days</label></div>
@@ -229,7 +229,8 @@
         }
 
         function updateCountdown() {
-            const ramadanDate = new Date("February 18, 2026 23:59:59").getTime();
+            // Updated target date to Ramadan 1448 AH (February 8, 2027)
+            const ramadanDate = new Date("February 8, 2027 00:00:00").getTime();
             const now = new Date().getTime();
             const gap = ramadanDate - now;
 
@@ -259,5 +260,4 @@
         updateCountdown();
     </script>
 </body>
-
 </html>
