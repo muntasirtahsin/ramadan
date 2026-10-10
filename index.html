@@ -70,7 +70,6 @@
             }
         }
 
-        /* Main Container - PC Grid Layout (Text Left, Moon Right) */
         .container {
             width: 92%;
             max-width: 1500px;
@@ -123,7 +122,6 @@
             letter-spacing: 1.5px;
         }
 
-        /* Countdown Boxes */
         .countdown-container {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -159,7 +157,6 @@
             opacity: 0.85;
         }
 
-        /* Date & Approximation Note */
         .date-container {
             margin: 1rem 0 1.5rem;
             max-width: 580px;
@@ -187,7 +184,6 @@
             font-style: italic;
         }
 
-        /* Fireworks */
         .firework { 
             position: absolute; 
             width: 4px; 
@@ -198,7 +194,6 @@
             will-change: transform, opacity;
         }
 
-        /* Mobile View - Centered Stack & Large Moon */
         @media (max-width: 1023px) {
             .container { 
                 grid-template-columns: 1fr; 
@@ -211,7 +206,7 @@
                 display: flex; 
                 flex-direction: column; 
                 align-items: center; 
-                text-align: center;
+                text-align: center; 
             }
             .countdown-container { 
                 margin: 1.2rem auto; 
@@ -225,7 +220,6 @@
             }
         }
 
-        /* Keyframes */
         @keyframes hanging { 
             0%, 100% { transform: translateY(0) rotate(-1.5deg); } 
             50% { transform: translateY(10px) rotate(1.5deg); } 
@@ -265,7 +259,7 @@
 
         <section class="content">
             <h1 id="status-text">Ramadan<br>Mubarak</h1>
-            <p class="hijri">1448 AH</p>
+            <p class="hijri" id="hijri-label">1448 AH</p>
             
             <div class="countdown-container">
                 <div class="time-box"><span id="days">00</span><label>Days</label></div>
@@ -275,18 +269,18 @@
             </div>
 
             <div class="date-container">
-                <p class="english-date">Expected: February 7, 2027</p>
-                <p class="moon-disclaimer">(Approximate date; subject to change based on the regional sighting of the moon)</p>
+                <p class="english-date" id="date-info">Expected: February 7, 2027 (Maghrib waqt)</p>
+                <p class="moon-disclaimer" id="disclaimer-info">(Approximate date; subject to change based on the regional sighting of the moon)</p>
             </div>
 
-            <p class="quote">
+            <p class="quote" id="quote-text">
                 "Ramadan is the month of forgiveness. Let's take this opportunity to repent and become better versions of ourselves."
             </p>
         </section>
     </main>
 
     <script>
-        let fireworksActive = false;
+        let fireworksInterval = null;
 
         function createFirework() {
             const centerX = Math.random() * window.innerWidth;
@@ -323,38 +317,123 @@
             }, 1200);
         }
 
+        // Generate multi-year milestones where each Ramadan lasts ~30 days
+        function getRamadanMilestones() {
+            let baseStart = new Date("February 7, 2027 18:25:00").getTime(); // Maghrib start for 1448 AH
+            let lunarYearDays = 354.367;
+            let ramadanDurationDays = 30;
+            
+            let milestones = [];
+            let currentStart = baseStart;
+            let currentHijri = 1448;
+
+            for (let i = 0; i < 15; i++) {
+                let currentEnd = currentStart + (ramadanDurationDays * 24 * 60 * 60 * 1000);
+                let nextStart = currentStart + (lunarYearDays * 24 * 60 * 60 * 1000);
+                
+                milestones.push({
+                    hijri: currentHijri,
+                    start: currentStart,
+                    end: currentEnd,
+                    nextStart: nextStart,
+                    startDateStr: new Date(currentStart).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) + " (Maghrib waqt)"
+                });
+
+                currentStart = nextStart;
+                currentHijri++;
+            }
+            return milestones;
+        }
+
         function updateCountdown() {
-            const ramadanDate = new Date("February 7, 2027 18:25:00").getTime();
             const now = Date.now();
-            const gap = ramadanDate - now;
+            const milestones = getRamadanMilestones();
+            
+            let activeMilestone = milestones[0];
+            for (let m of milestones) {
+                if (now < m.nextStart) {
+                    activeMilestone = m;
+                    break;
+                }
+            }
 
             const daysEl = document.getElementById('days');
             const hoursEl = document.getElementById('hours');
             const minsEl = document.getElementById('minutes');
             const secsEl = document.getElementById('seconds');
             const statusEl = document.getElementById('status-text');
+            const hijriEl = document.getElementById('hijri-label');
+            const dateInfoEl = document.getElementById('date-info');
+            const disclaimerEl = document.getElementById('disclaimer-info');
+            const quoteEl = document.getElementById('quote-text');
 
-            if (gap <= 0) {
+            hijriEl.innerText = activeMilestone.hijri + " AH";
+
+            // Phase 1: Before Ramadan begins (Counting down)
+            if (now < activeMilestone.start) {
+                if (fireworksInterval) {
+                    clearInterval(fireworksInterval);
+                    fireworksInterval = null;
+                }
+
+                statusEl.innerHTML = "Ramadan<br>Mubarak";
+                dateInfoEl.innerText = "Expected: " + activeMilestone.startDateStr;
+                disclaimerEl.style.display = "block";
+                quoteEl.innerText = `"Ramadan is the month of forgiveness. Let's take this opportunity to repent and become better versions of ourselves."`;
+
+                const gap = activeMilestone.start - now;
+                const second = 1000, minute = second * 60, hour = minute * 60, day = hour * 24;
+                
+                daysEl.innerText = Math.floor(gap / day).toString().padStart(2, '0');
+                hoursEl.innerText = Math.floor((gap % day) / hour).toString().padStart(2, '0');
+                minsEl.innerText = Math.floor((gap % hour) / minute).toString().padStart(2, '0');
+                secsEl.innerText = Math.floor((gap % minute) / second).toString().padStart(2, '0');
+            } 
+            // Phase 2: DURING Ramadan (Timer locked at 00 with continuous fireworks)
+            else if (now >= activeMilestone.start && now <= activeMilestone.end) {
                 daysEl.innerText = "00";
                 hoursEl.innerText = "00";
                 minsEl.innerText = "00";
                 secsEl.innerText = "00";
-                statusEl.innerText = "Ramadan Kareem!";
                 
-                if (!fireworksActive) {
-                    fireworksActive = true;
-                    setInterval(createFirework, 2500);
-                    createFirework(); 
-                }
-                return;
-            }
+                statusEl.innerHTML = "Ramadan Kareem!";
+                dateInfoEl.innerText = "Blessed Month in Progress";
+                disclaimerEl.style.display = "none";
+                quoteEl.innerText = `"The month of Ramadan is that in which was revealed the Qur'an - guidance for the people and clear proofs of guidance and criterion."`;
 
-            const second = 1000, minute = second * 60, hour = minute * 60, day = hour * 24;
-            
-            daysEl.innerText = Math.floor(gap / day).toString().padStart(2, '0');
-            hoursEl.innerText = Math.floor((gap % day) / hour).toString().padStart(2, '0');
-            minsEl.innerText = Math.floor((gap % hour) / minute).toString().padStart(2, '0');
-            secsEl.innerText = Math.floor((gap % minute) / second).toString().padStart(2, '0');
+                if (!fireworksInterval) {
+                    fireworksInterval = setInterval(createFirework, 2500);
+                    createFirework();
+                }
+            } 
+            // Phase 3: After Ramadan ends / Eid & Shawal onwards (Automatically counts down to next year)
+            else {
+                if (fireworksInterval) {
+                    clearInterval(fireworksInterval);
+                    fireworksInterval = null;
+                }
+
+                statusEl.innerHTML = "Eid Mubarak &<br>Waiting for Ramadan";
+                dateInfoEl.innerText = "Preparing for next Ramadan (" + (activeMilestone.hijri + 1) + " AH)";
+                disclaimerEl.style.display = "block";
+                quoteEl.innerText = `"May Allah accept our fasting, prayers, and good deeds throughout the blessed month."`;
+
+                let nextMilestone = milestones.find(m => m.hijri === activeMilestone.hijri + 1) || activeMilestone;
+                const gap = nextMilestone.start - now;
+                
+                const second = 1000, minute = second * 60, hour = minute * 60, day = hour * 24;
+                if (gap > 0) {
+                    daysEl.innerText = Math.floor(gap / day).toString().padStart(2, '0');
+                    hoursEl.innerText = Math.floor((gap % day) / hour).toString().padStart(2, '0');
+                    minsEl.innerText = Math.floor((gap % hour) / minute).toString().padStart(2, '0');
+                    secsEl.innerText = Math.floor((gap % minute) / second).toString().padStart(2, '0');
+                } else {
+                    daysEl.innerText = "00";
+                    hoursEl.innerText = "00";
+                    minsEl.innerText = "00";
+                    secsEl.innerText = "00";
+                }
+            }
         }
 
         setInterval(updateCountdown, 1000);
