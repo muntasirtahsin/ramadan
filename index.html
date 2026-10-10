@@ -28,44 +28,100 @@
             position: relative;
         }
 
-        /* Main Container */
+        /* LANTERNS (Desktop Only) */
+        .lanterns-container { display: none; }
+        @media (min-width: 1024px) {
+            .lanterns-container {
+                display: flex;
+                position: absolute;
+                top: -20px; 
+                width: 100%;
+                justify-content: space-around;
+                padding: 0 8%;
+                z-index: 10;
+                pointer-events: none;
+            }
+            .lantern { 
+                width: clamp(80px, 8vw, 115px); 
+                position: relative;
+                animation: hanging 5s ease-in-out infinite; 
+                transform-origin: top center;
+                will-change: transform;
+            }
+            .lantern img { 
+                width: 100%; 
+                position: relative;
+                z-index: 2;
+                filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
+            }
+            .lantern::after {
+                content: '';
+                position: absolute;
+                top: 55%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 45px;
+                height: 55px;
+                background: radial-gradient(circle, rgba(255, 237, 78, 0.7) 0%, rgba(212, 175, 55, 0.2) 60%, transparent 80%);
+                border-radius: 50%;
+                z-index: 1;
+                animation: candlePulse 2.5s infinite alternate ease-in-out;
+                will-change: transform, opacity;
+            }
+        }
+
         .container {
             width: 92%;
-            max-width: 900px;
-            display: flex;
-            flex-direction: column;
+            max-width: 1500px;
+            display: grid;
+            grid-template-columns: 1.1fr 1.2fr;
+            grid-template-areas: "text image";
             align-items: center;
-            text-align: center;
+            gap: 3rem;
             z-index: 5;
             padding: 2.5rem 1.5rem;
             margin: auto;
         }
 
         .content { 
+            grid-area: text; 
             animation: fadeInUp 0.8s ease-out; 
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            text-align: left; 
+        }
+
+        .illustration { 
+            grid-area: image; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            animation: moonPulse 6s ease-in-out infinite; 
+            will-change: transform;
+        }
+
+        .moon { 
+            width: 100%; 
+            max-width: clamp(380px, 48vw, 750px); 
+            height: auto;
+            filter: drop-shadow(0 0 35px rgba(212, 175, 55, 0.25)); 
+            transform: translateZ(0);
         }
 
         h1 { 
             font-family: 'Berkshire Swash', cursive; 
-            font-size: clamp(2.8rem, 5.5vw, 4.5rem); 
+            font-size: clamp(2.8rem, 5.5vw, 5.5rem); 
             line-height: 1.1; 
             margin-bottom: 0.3rem; 
             text-shadow: 0 4px 12px rgba(0,0,0,0.4);
         }
         
         .hijri { 
-            font-size: clamp(1.3rem, 2.2vw, 2rem); 
+            font-size: clamp(1.3rem, 2.2vw, 2.2rem); 
             color: var(--gold); 
             margin-bottom: 1.2rem; 
             font-weight: 700; 
             letter-spacing: 1.5px;
         }
 
-        /* Countdown Boxes */
         .countdown-container {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -101,7 +157,6 @@
             opacity: 0.85;
         }
 
-        /* Date & Approximation Note */
         .date-container {
             margin: 1rem 0 1.5rem;
             max-width: 580px;
@@ -127,42 +182,8 @@
             line-height: 1.6; 
             font-size: clamp(0.95rem, 1.3vw, 1.15rem);
             font-style: italic;
-            margin-top: 1rem;
         }
 
-        /* TESTING CONTROLS PANEL */
-        .test-controls {
-            margin-top: 2.5rem;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px dashed rgba(212, 175, 55, 0.4);
-            padding: 12px 20px;
-            border-radius: 10px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-        }
-        .test-controls span {
-            font-size: 0.85rem;
-            color: var(--gold);
-            width: 100%;
-            margin-bottom: 2px;
-        }
-        .test-btn {
-            background: var(--gold);
-            color: #051a19;
-            border: none;
-            padding: 6px 12px;
-            font-weight: 700;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: opacity 0.2s;
-        }
-        .test-btn:hover { opacity: 0.85; }
-
-        /* Fireworks */
         .firework { 
             position: absolute; 
             width: 4px; 
@@ -173,9 +194,47 @@
             will-change: transform, opacity;
         }
 
+        @media (max-width: 1023px) {
+            .container { 
+                grid-template-columns: 1fr; 
+                grid-template-areas: "image" "text"; 
+                text-align: center; 
+                padding: 2rem 1rem;
+                gap: 1.2rem;
+            }
+            .content { 
+                display: flex; 
+                flex-direction: column; 
+                align-items: center; 
+                text-align: center; 
+            }
+            .countdown-container { 
+                margin: 1.2rem auto; 
+            }
+            .moon { 
+                width: 88vw;
+                max-width: 440px; 
+            }
+            .date-container {
+                margin: 0.8rem auto 1.2rem;
+            }
+        }
+
+        @keyframes hanging { 
+            0%, 100% { transform: translateY(0) rotate(-1.5deg); } 
+            50% { transform: translateY(10px) rotate(1.5deg); } 
+        }
         @keyframes fadeInUp { 
             from { opacity: 0; transform: translateY(15px); } 
             to { opacity: 1; transform: translateY(0); } 
+        }
+        @keyframes moonPulse { 
+            0%, 100% { transform: scale(1); } 
+            50% { transform: scale(1.03); } 
+        }
+        @keyframes candlePulse { 
+            0% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.95); } 
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); } 
         }
         @keyframes explode {
             0% { transform: translate3d(0, 0, 0); opacity: 1; }
@@ -185,7 +244,19 @@
 </head>
 <body>
 
+    <header class="lanterns-container">
+        <div class="lantern"><img src="lantern.png" alt=""></div>
+        <div class="lantern"><img src="lantern.png" alt=""></div>
+        <div class="lantern"><img src="lantern.png" alt=""></div>
+        <div class="lantern"><img src="lantern.png" alt=""></div>
+        <div class="lantern"><img src="lantern.png" alt=""></div>
+    </header>
+
     <main class="container">
+        <figure class="illustration">
+            <img src="moon-mosque.png" alt="Moon and Mosque" class="moon">
+        </figure>
+
         <section class="content">
             <h1 id="status-text">Ramadan<br>Mubarak</h1>
             <p class="hijri" id="hijri-label">1448 AH</p>
@@ -197,8 +268,7 @@
                 <div class="time-box"><span id="seconds">00</span><label>Secs</label></div>
             </div>
 
-            <!-- Date & Approximation Note -->
-            <div class="date-container" id="date-container">
+            <div class="date-container">
                 <p class="english-date" id="date-info">Expected: February 7, 2027 (Maghrib waqt)</p>
                 <p class="moon-disclaimer" id="disclaimer-info">(Approximate date; subject to change based on the regional sighting of the moon)</p>
             </div>
@@ -206,20 +276,11 @@
             <p class="quote" id="quote-text">
                 "Ramadan is the month of forgiveness. Let's take this opportunity to repent and become better versions of ourselves."
             </p>
-
-            <!-- Test simulation buttons to easily check states -->
-            <div class="test-controls">
-                <span>Dev / Simulation Controls:</span>
-                <button class="test-btn" onclick="simMode = 'normal';">Real Time</button>
-                <button class="test-btn" onclick="simMode = 'during';">Simulate Ramadan Active (00 & Fireworks)</button>
-                <button class="test-btn" onclick="simMode = 'after';">Simulate Post-Ramadan (Next Year Countdown)</button>
-            </div>
         </section>
     </main>
 
     <script>
         let fireworksInterval = null;
-        let simMode = 'normal'; // 'normal', 'during', 'after'
 
         function createFirework() {
             const centerX = Math.random() * window.innerWidth;
@@ -258,8 +319,7 @@
 
         // Generate multi-year milestones where each Ramadan lasts ~30 days
         function getRamadanMilestones() {
-            // 1st Ramadan 1448 AH starts daytime Feb 8, 2027. Maghrib waqt is the evening BEFORE: Feb 7, 2027
-            let baseStart = new Date("February 7, 2027 18:25:00").getTime();
+            let baseStart = new Date("February 7, 2027 18:25:00").getTime(); // Maghrib start for 1448 AH
             let lunarYearDays = 354.367;
             let ramadanDurationDays = 30;
             
@@ -271,15 +331,12 @@
                 let currentEnd = currentStart + (ramadanDurationDays * 24 * 60 * 60 * 1000);
                 let nextStart = currentStart + (lunarYearDays * 24 * 60 * 60 * 1000);
                 
-                // The evening BEFORE 1st Ramadan (Maghrib waqt)
-                let maghribDateStr = new Date(currentStart).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-                
                 milestones.push({
                     hijri: currentHijri,
                     start: currentStart,
                     end: currentEnd,
                     nextStart: nextStart,
-                    startDateStr: "Expected: " + maghribDateStr + " (Maghrib waqt)"
+                    startDateStr: new Date(currentStart).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) + " (Maghrib waqt)"
                 });
 
                 currentStart = nextStart;
@@ -289,12 +346,12 @@
         }
 
         function updateCountdown() {
-            const realNow = Date.now();
+            const now = Date.now();
             const milestones = getRamadanMilestones();
             
             let activeMilestone = milestones[0];
             for (let m of milestones) {
-                if (realNow < m.nextStart) {
+                if (now < m.nextStart) {
                     activeMilestone = m;
                     break;
                 }
@@ -306,45 +363,25 @@
             const secsEl = document.getElementById('seconds');
             const statusEl = document.getElementById('status-text');
             const hijriEl = document.getElementById('hijri-label');
-            const dateContainerEl = document.getElementById('date-container');
             const dateInfoEl = document.getElementById('date-info');
             const disclaimerEl = document.getElementById('disclaimer-info');
             const quoteEl = document.getElementById('quote-text');
 
-            // Determine effective time based on simulation buttons or real clock
-            let now = realNow;
-            if (simMode === 'during') {
-                now = activeMilestone.start + 1000; // Forces active Ramadan state
-            } else if (simMode === 'after') {
-                now = activeMilestone.end + 1000; // Forces post-Ramadan state
-            }
+            hijriEl.innerText = activeMilestone.hijri + " AH";
 
-            // Find correct active milestone if simulated to after
-            let targetMilestone = activeMilestone;
-            if (now > activeMilestone.nextStart) {
-                let found = milestones.find(m => now >= m.end && now < m.nextStart);
-                if (found) {
-                    let nextIdx = milestones.indexOf(found) + 1;
-                    if (nextIdx < milestones.length) targetMilestone = milestones[nextIdx];
-                }
-            }
-
-            hijriEl.innerText = targetMilestone.hijri + " AH";
-
-            // Phase 1: Before Ramadan begins (Counting down to upcoming Ramadan start at Maghrib)
-            if (now < targetMilestone.start) {
+            // Phase 1: Before Ramadan begins (Counting down)
+            if (now < activeMilestone.start) {
                 if (fireworksInterval) {
                     clearInterval(fireworksInterval);
                     fireworksInterval = null;
                 }
 
                 statusEl.innerHTML = "Ramadan<br>Mubarak";
-                dateContainerEl.style.display = "block";
-                dateInfoEl.innerText = targetMilestone.startDateStr;
+                dateInfoEl.innerText = "Expected: " + activeMilestone.startDateStr;
                 disclaimerEl.style.display = "block";
                 quoteEl.innerText = `"Ramadan is the month of forgiveness. Let's take this opportunity to repent and become better versions of ourselves."`;
 
-                const gap = targetMilestone.start - now;
+                const gap = activeMilestone.start - now;
                 const second = 1000, minute = second * 60, hour = minute * 60, day = hour * 24;
                 
                 daysEl.innerText = Math.floor(gap / day).toString().padStart(2, '0');
@@ -352,16 +389,16 @@
                 minsEl.innerText = Math.floor((gap % hour) / minute).toString().padStart(2, '0');
                 secsEl.innerText = Math.floor((gap % minute) / second).toString().padStart(2, '0');
             } 
-            // Phase 2: DURING Ramadan (Timer locked at 00 with continuous fireworks, heading: Ramadan Kareem!)
-            else if (now >= targetMilestone.start && now <= targetMilestone.end) {
+            // Phase 2: DURING Ramadan (Timer locked at 00 with continuous fireworks)
+            else if (now >= activeMilestone.start && now <= activeMilestone.end) {
                 daysEl.innerText = "00";
                 hoursEl.innerText = "00";
                 minsEl.innerText = "00";
                 secsEl.innerText = "00";
                 
                 statusEl.innerHTML = "Ramadan Kareem!";
-                // Completely hide expected date during Ramadan month
-                dateContainerEl.style.display = "none";
+                dateInfoEl.innerText = "Blessed Month in Progress";
+                disclaimerEl.style.display = "none";
                 quoteEl.innerText = `"The month of Ramadan is that in which was revealed the Qur'an - guidance for the people and clear proofs of guidance and criterion."`;
 
                 if (!fireworksInterval) {
@@ -369,21 +406,19 @@
                     createFirework();
                 }
             } 
-            // Phase 3: After Ramadan ends / Shawwal onwards (Counts down to next year)
+            // Phase 3: After Ramadan ends / Eid & Shawal onwards (Automatically counts down to next year)
             else {
                 if (fireworksInterval) {
                     clearInterval(fireworksInterval);
                     fireworksInterval = null;
                 }
 
-                let nextMilestone = milestones.find(m => m.hijri === targetMilestone.hijri + 1) || targetMilestone;
-
                 statusEl.innerHTML = "Eid Mubarak &<br>Waiting for Ramadan";
-                dateContainerEl.style.display = "block";
-                dateInfoEl.innerText = nextMilestone.startDateStr;
+                dateInfoEl.innerText = "Preparing for next Ramadan (" + (activeMilestone.hijri + 1) + " AH)";
                 disclaimerEl.style.display = "block";
                 quoteEl.innerText = `"May Allah accept our fasting, prayers, and good deeds throughout the blessed month."`;
 
+                let nextMilestone = milestones.find(m => m.hijri === activeMilestone.hijri + 1) || activeMilestone;
                 const gap = nextMilestone.start - now;
                 
                 const second = 1000, minute = second * 60, hour = minute * 60, day = hour * 24;
